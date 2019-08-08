@@ -48,7 +48,6 @@
   :target-path "target/%s/"
   :main ^:skip-aot ry-middle-front.core
 
-  :plugins [[lein-shadow "0.1.4"]]
   :clean-targets ^{:protect false}
   [:target-path "target/cljsbuild"]
   
