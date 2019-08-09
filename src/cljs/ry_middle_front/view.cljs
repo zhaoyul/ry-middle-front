@@ -11,6 +11,7 @@
 (def Sider (.-Sider ant/Layout))
 (def Content (.-Content ant/Layout))
 (def Footer (.-Footer ant/Layout))
+(def BreadcrumbItem (.-Item ant/Breadcrumb))
 
 (def collapsed (r/atom false))
 (defn- toggle []
@@ -60,25 +61,23 @@
   [:section.section>div.container>div.Content
    [:h1 "I am home"]])
 
+(def routes [{:path "index"
+              :breadcrumbName "first-level Menu"}
+             {:path "index1"
+              :breadcrumbName "sec-level Menu"}])
+
 (defn pages []
   [:div
-   [:> ant/PageHeader {:title "haha"
-                       :subTitle "subHeader"} ]
-   [kf/switch-route (fn [route] (get-in route [:data :name]))
-    :home home-page
-    :about about-page
-    :products [:div "商品信息"]
-    nil [:div "路由没找到"]]])
+   [:> ant/Breadcrumb
+    [:> BreadcrumbItem "good"]
+    [:> BreadcrumbItem "good"]]
+   [:> ant/PageHeader {:title "haha"}
 
-;; const routes = [
-;;                 {
-;;                  path: 'index',
-;;                  breadcrumbName: 'First-level Menu',
-;;                  }]
-
-(def routes [{:path "index"
-              :breadcrumbName "first-level Menu"}])
-
+    [kf/switch-route (fn [route] (get-in route [:data :name]))
+     :home home-page
+     :about about-page
+     :products [:div "商品信息"]
+     nil [:div "路由没找到"]]]])
 
 (defn root-component []
   [:div
@@ -94,13 +93,10 @@
       [:> ant/Icon {:className "trigger"
                     :type (if-not @collapsed "menu-unfold" "menu-fold")
                     :on-click toggle}]]
-     [:> Content {:style {:margin "24px 16px"
-                          :padding 24
+     [:> Content {:style {:margin "4px 0px"
+                          :padding 4
                           :background "#fff"
                           :minHeight 280}}
       [pages]]
-
      [:> Footer
-      [:div "版权信息"]
-      ]]]
-   ])
+      [:div "版权信息"]]]]])
