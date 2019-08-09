@@ -12,10 +12,19 @@
 (def Content (.-Content ant/Layout))
 (def Footer (.-Footer ant/Layout))
 (def BreadcrumbItem (.-Item ant/Breadcrumb))
+(def FormItem (.-Item ant/Form))
 
 (def collapsed (r/atom false))
 (defn- toggle []
   (swap! collapsed not))
+
+(defn tform []
+  [:> ant/Form {:layout "inline"}
+   [:> FormItem
+    [:> ant/Input {:prefix (r/as-element
+                            [:> ant/Icon {:type "user"
+                                          :style {:color "rgba(0,0,0,.25)"}}])
+                   :placeholder "test input"}]]])
 
 (defn side-menu []
   [:> ant/Menu {:theme "dark"
@@ -71,6 +80,7 @@
    [:> ant/Breadcrumb
     [:> BreadcrumbItem "good"]
     [:> BreadcrumbItem "good"]]
+   [tform]
    [:> ant/PageHeader {:title "haha"}
 
     [kf/switch-route (fn [route] (get-in route [:data :name]))
