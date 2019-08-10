@@ -3,7 +3,9 @@
    [kee-frame.core :as kf]
    [reagent.core :as r]
    [re-frame.core :as rf]
-   ["antd" :as ant]))
+   ["antd" :as ant]
+   [ry-middle-front.form :as form]))
+
 
 (def SubMenu (.-SubMenu ant/Menu))
 (def MenuItem (.-Item ant/Menu))
@@ -18,13 +20,7 @@
 (defn- toggle []
   (swap! collapsed not))
 
-(defn tform []
-  [:> ant/Form {:layout "inline"}
-   [:> FormItem
-    [:> ant/Input {:prefix (r/as-element
-                            [:> ant/Icon {:type "user"
-                                          :style {:color "rgba(0,0,0,.25)"}}])
-                   :placeholder "test input"}]]])
+
 
 (defn side-menu []
   [:> ant/Menu {:theme "dark"
@@ -70,24 +66,54 @@
   [:section.section>div.container>div.Content
    [:h1 "I am home"]])
 
+(defn product-list []
+  [:div
+   [:> ant/PageHeader {:title "商品列表"}]
+   [:> ant/Card
+    [:> ant/Row
+     [:> ant/Col {:span 12} [:h1 "数据列表"]]
+     [:> ant/Col {:span 12} [:> ant/Button {:type "primary"
+                                            :style {:float "right"}}
+                             [:> ant/Icon {:type "plus"}]
+                             "增加数据"]]]]])
+
 (def routes [{:path "index"
               :breadcrumbName "first-level Menu"}
              {:path "index1"
               :breadcrumbName "sec-level Menu"}])
+
+(defn tform []
+  (fn [props]
+
+    (let [the-form (form/get-form)
+          {:keys [getFieldDecorator
+                  getFieldsError
+                  getFieldError
+                  isFieldTouched]} the-form
+          usernameError (and (isFieldTouched "username")
+                             (getFieldError "username"))]
+
+      [:> ant/Form {:layout "inline"}
+       [:> FormItem {:validateStatus (if usernameError "error" "")
+                     :help (str usernameError " ")}
+        (form/decorate-field
+         the-form "username" {:rules [{:required true}]}
+         [:> ant/Input
+          {:prefix (r/as-element [:> ant/Icon {:type "user"}])}])]])))
+
+;;(form/create-form tform)
 
 (defn pages []
   [:div
    [:> ant/Breadcrumb
     [:> BreadcrumbItem "good"]
     [:> BreadcrumbItem "good"]]
-   [tform]
-   [:> ant/PageHeader {:title "haha"}
 
-    [kf/switch-route (fn [route] (get-in route [:data :name]))
-     :home home-page
-     :about about-page
-     :products [:div "商品信息"]
-     nil [:div "路由没找到"]]]])
+   [kf/switch-route (fn [route] (get-in route [:data :name]))
+    :home home-page
+    :about about-page
+    :products product-list
+    nil [:div "路由没找到"]]])
 
 (defn root-component []
   [:div
@@ -99,14 +125,15 @@
      [side-menu]]
     [:> ant/Layout
      [:> Header {:style {:background "#fff"
-                         :padding 0}}
+                         :padding 25
+                         :margin "10px 10px"}}
       [:> ant/Icon {:className "trigger"
                     :type (if-not @collapsed "menu-unfold" "menu-fold")
                     :on-click toggle}]]
-     [:> Content {:style {:margin "4px 0px"
-                          :padding 4
+     [:> Content {:style {:margin "0px 10px"
+                          :padding 20
                           :background "#fff"
-                          :minHeight 280}}
+                          :minHeight 800}}
       [pages]]
      [:> Footer
       [:div "版权信息"]]]]])
