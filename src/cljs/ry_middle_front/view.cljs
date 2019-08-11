@@ -5,7 +5,8 @@
    [re-frame.core :as rf]
    ["antd" :as ant]
    [ry-middle-front.utils :as utils]
-   [ry-middle-front.pages.product :as product]))
+   [ry-middle-front.pages.product :as product]
+   [ry-middle-front.pages.category :as category]))
 
 
 (def SubMenu (.-SubMenu ant/Menu))
@@ -45,7 +46,7 @@
                          [:> ant/Icon {:type "appstore"}]
                          [:span "商品管理"]])}
     [:> MenuItem {:key "products"} "商品列表"]
-    [:> MenuItem {:key "4"} "主品类列表"]
+    [:> MenuItem {:key "categories"} "主品类列表"]
     [:> MenuItem {:key "5"} "子品类列表"]
     [:> MenuItem {:key "6"} "款式"]
     [:> MenuItem {:key "7"} "风格"]]])
@@ -68,37 +69,21 @@
              {:path "index1"
               :breadcrumbName "sec-level Menu"}])
 
-(defn tform []
-  (fn [props]
-
-    (let [the-form (utils/get-form)
-          {:keys [getFieldDecorator
-                  getFieldsError
-                  getFieldError
-                  isFieldTouched]} the-form
-          usernameError (and (isFieldTouched "username")
-                             (getFieldError "username"))]
-
-      [:> ant/Form {:layout "inline"}
-       [:> FormItem {:validateStatus (if usernameError "error" "")
-                     :help (str usernameError " ")}
-        (utils/decorate-field
-         the-form "username" {:rules [{:required true}]}
-         [:> ant/Input
-          {:prefix (r/as-element [:> ant/Icon {:type "user"}])}])]])))
-
-;;(form/create-form tform)
+(defn bread-crumbs []
+  ;; TODO : 需要根据路由变化
+  [:> ant/Breadcrumb
+   [:> BreadcrumbItem "一级菜单"]
+   [:> BreadcrumbItem "二级菜单"]])
 
 (defn pages []
   [:div
-   [:> ant/Breadcrumb
-    [:> BreadcrumbItem "good"]
-    [:> BreadcrumbItem "good"]]
+   [bread-crumbs]
 
    [kf/switch-route (fn [route] (get-in route [:data :name]))
     :home home-page
     :about about-page
-    :products product/product-page
+    :products ry-middle-front.pages.product/product-page
+    :categories category/category-page
     nil [:div "路由没找到"]]])
 
 (defn root-component []
