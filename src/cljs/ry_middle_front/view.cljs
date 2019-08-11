@@ -5,9 +5,9 @@
    [re-frame.core :as rf]
    ["antd" :as ant]
    [ry-middle-front.utils :as utils]
+   ["antd/es/locale/zh_CN" :default zhCN]
    [ry-middle-front.pages.product :as product]
    [ry-middle-front.pages.category :as category]))
-
 
 (def SubMenu (.-SubMenu ant/Menu))
 (def MenuItem (.-Item ant/Menu))
@@ -87,24 +87,25 @@
     nil [:div "路由没找到"]]])
 
 (defn root-component []
-  [:div
-   [:> ant/Layout
-    [:> Sider {:trigger nil
-               :collapsible false
-               :collapsed @collapsed}
-     [:div {:className "logo"}]
-     [side-menu]]
+  [:> ant/ConfigProvider {:locale zhCN}
+   [:div
     [:> ant/Layout
-     [:> Header {:style {:background "#fff"
-                         :padding 25
-                         :margin "10px 10px"}}
-      [:> ant/Icon {:className "trigger"
-                    :type (if-not @collapsed "menu-unfold" "menu-fold")
-                    :on-click toggle}]]
-     [:> Content {:style {:margin "0px 10px"
-                          :padding 20
-                          :background "#fff"
-                          :minHeight 800}}
-      [pages]]
-     [:> Footer
-      [:div "版权信息"]]]]])
+     [:> Sider {:trigger nil
+                :collapsible false
+                :collapsed @collapsed}
+      [:div {:className "logo"}]
+      [side-menu]]
+     [:> ant/Layout
+      [:> Header {:style {:background "#fff"
+                          :padding 25
+                          :margin "10px 10px"}}
+       [:> ant/Icon {:className "trigger"
+                     :type (if-not @collapsed "menu-unfold" "menu-fold")
+                     :on-click toggle}]]
+      [:> Content {:style {:margin "0px 10px"
+                           :padding 20
+                           :background "#fff"
+                           :minHeight 800}}
+       [pages]]
+      [:> Footer
+       [:div "版权信息"]]]]]])

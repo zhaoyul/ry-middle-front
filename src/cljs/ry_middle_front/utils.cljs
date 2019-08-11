@@ -68,3 +68,22 @@
    (let [field-decorator (:getFieldDecorator form)
          params (clj->js (map-keys->camel-case options))]
      ((field-decorator id params) (r/as-element field)))))
+
+
+#_(defn tform []
+    (fn [props]
+      (let [the-form (utils/get-form)
+            {:keys [getFieldDecorator
+                    getFieldsError
+                    getFieldError
+                    isFieldTouched]} the-form
+            usernameError (and (isFieldTouched "username")
+                               (getFieldError "username"))]
+
+        [:> ant/Form {:layout "inline"}
+         [:> FormItem {:label "输入搜索"
+                       :validateStatus (if usernameError "error" "success")
+                       :help usernameError }
+          (utils/decorate-field
+           the-form "username" {:rules [{:required true}]}
+           [:> ant/Input])]])))
